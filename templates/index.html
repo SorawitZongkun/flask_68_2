@@ -35,7 +35,7 @@
             <td>{{ flower.flower_name }}</td>
             <td>{{ flower.flower_price }}</td>
             <td>{{ flower.flower_place }}</td>
-            <td>edit</td>
+            <td><a href="{{ url_for('edit', flower_id=flower.id) }}" class="btn btn-info">Edit</a></td>
             <td>delete</td>
         </tr>
         {% endfor %}

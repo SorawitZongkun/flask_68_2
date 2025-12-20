@@ -93,6 +93,64 @@ def index():
     
     return render_template('index.html', flowers=flowers, alert_message=alert_message)
 
+@app.route('/edit/<int:flower_id>', methods=['GET'])
+def edit(flower_id):
+    # Connect to database and fetch flower by id
+    my_db = mysql.connector.connect(
+        host=DB_HOST,
+        user=DB_USER,
+        password=DB_PASSWORD,
+        database=DB_NAME
+    )
+    my_cursor = my_db.cursor(dictionary=True)
+    # Fetch flower from the database
+    sql = "SELECT * FROM flowers WHERE id = %s"
+    val = (flower_id,)
+    my_cursor.execute(sql, val)
+    flower = my_cursor.fetchall()
+    my_db.close()
+
+    return render_template('edit.html', flower=flower)
+
+@app.route('/update/<int:flower_id>', methods=['POST'])
+def update(flower_id):
+    if request.method == "POST":
+        flower_name = request.form['flowerName']
+        flower_price = request.form['flowerPrice']
+        flower_place = request.form['flowerPlace']
+        flower_description = request.form['flowerDescription']
+        print('UPDATE INPUT: ', flower_name, flower_price, flower_place, flower_description)
+
+        # Connect to database and update the data
+        my_db = mysql.connector.connect(
+            host=DB_HOST,
+            user=DB_USER,
+            password=DB_PASSWORD,
+            database=DB_NAME
+        )
+        my_cursor = my_db.cursor(dictionary=True)
+        # Update data in the database
+        sql = """
+            UPDATE flowers SET
+            flower_name=%s,
+            flower_price=%s,
+            flower_place=%s,
+            flower_description=%s
+            WHERE id=%s
+        """
+        val = (flower_name, flower_price, flower_place, flower_description, flower_id)
+        my_cursor.execute(sql, val)
+        my_db.commit()
+        my_db.close()
+
+        session['alert_status'] = "success"
+        session['alert_message'] = "Flower updated successfully!"
+        return redirect('/')
+    else:
+        session['alert_status'] = "fail"
+        session['alert_message'] = "Something went wrong!"
+        return redirect('/')
+
 if __name__ == '__main__':
     # app.run() # production mode
     app.run(debug=True) # development mode

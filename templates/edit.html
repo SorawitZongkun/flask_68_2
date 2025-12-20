@@ -1,0 +1,43 @@
+{% extends "base_template.html" %}
+
+{% block title %}
+<title>Edit Page</title>
+{% endblock %}
+
+{% block content %}
+<h1 class="text-center">Edit Page</h1>
+<form action="{{ url_for('update', flower_id=flower[0].id) }}" method="post">
+    <div class="mb-3">
+        <label for="flowerName" class="form-label">Flower Name</label>
+        <input type="text" class="form-control" id="flowerName" name="flowerName" placeholder="Enter flower name"
+            value="{{ flower[0].flower_name }}" required>
+    </div>
+
+    <div class="mb-3">
+        <label for="flowerPrice" class="form-label">Flower Price</label>
+        <input type="number" class="form-control" id="flowerPrice" name="flowerPrice" step="0.01"
+            value="{{ flower[0].flower_price }}">
+    </div>
+
+    <div class="mb-3">
+        <label for="flowerPlace" class="form-label">Place</label>
+        <select class="form-control" id="flowerPlace" name="flowerPlace">
+            <option value="lotus" {% if flower[0].flower_place=="lotus" %}selected{% endif %}>Lotus</option>
+            <option value="big c" {% if flower[0].flower_place=="big c" %}selected{% endif %}>Big C</option>
+            <option value="seven" {% if flower[0].flower_place=="seven" %}selected{% endif %}>Seven</option>
+        </select>
+    </div>
+
+    <div class="mb-3">
+        <label for="flowerDescription" class="form-label">Description</label>
+        <textarea class="form-control" id="flowerDescription" name="flowerDescription"
+            rows="5">{{ flower[0].flower_description }}</textarea>
+    </div>
+
+    <div class="mb-3">
+        <button type="submit" class="btn btn-primary">Submit</button>
+    </div>
+
+
+</form>
+{% endblock %}
