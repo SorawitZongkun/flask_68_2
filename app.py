@@ -151,6 +151,27 @@ def update(flower_id):
         session['alert_message'] = "Something went wrong!"
         return redirect('/')
 
+@app.route('/delete/<int:flower_id>', methods=['GET'])
+def delete(flower_id):
+    # Connect to database and delete flower by id
+    my_db = mysql.connector.connect(
+        host=DB_HOST,
+        user=DB_USER,
+        password=DB_PASSWORD,
+        database=DB_NAME
+    )
+    my_cursor = my_db.cursor(dictionary=True)
+    # Delete flower from the database
+    sql = "DELETE FROM flowers WHERE id = %s"
+    val = (flower_id,)
+    my_cursor.execute(sql, val)
+    my_db.commit()
+    my_db.close()
+
+    session['alert_status'] = "success"
+    session['alert_message'] = "Flower deleted successfully!"
+    return redirect('/')
+
 if __name__ == '__main__':
     # app.run() # production mode
     app.run(debug=True) # development mode
